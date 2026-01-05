@@ -1,95 +1,95 @@
 <div class="container" *ngIf="selectedRecipe">
-    <button class="back-button" (click)="goToHome()">Back</button>
-    
-    <div class="card"> 
-      <h1 class="recipe-title">{{selectedRecipe.title}}</h1>
-      
-       <!-- Summary -->
-       <div class="summary">
-        <h5>Summary</h5>
+  <button class="back-button" (click)="goToHome()">Back</button>
+
+  <div class="card">
+    <h1 class="recipe-title">{{selectedRecipe.title}}</h1>
+
+    <!-- Summary -->
+    <div class="summary">
+      <h5>Summary</h5>
+      <ul>
+        <li>
+          <strong>{{selectedRecipe.summary}}</strong>
+        </li>
+      </ul>
+    </div>
+
+    <div class="recipe-visual">
+
+      <!-- Image on the right -->
+      <div class="recipe-image" *ngIf="selectedRecipe.image && selectedRecipe.image.length">
+        <div *ngFor="let img of selectedRecipe.image">
+          <img [src]="img" alt="Recipe Image" class="bgImage">
+        </div>
+      </div>
+
+      <!-- Ingredients next to the image -->
+      <div class="recipe-ingredients">
+        <h5>Ingredients</h5>
         <ul>
-          <li *ngFor="let summary of selectedRecipe.summary">
-            <strong>{{summary}}</strong>
+          <li>
+            <strong>{{selectedRecipe.ingredients}}</strong>
           </li>
         </ul>
       </div>
+    </div>
 
-      <div class="recipe-visual">
-        
-        <!-- Image on the right -->
-        <div class="recipe-image" *ngIf="selectedRecipe.image && selectedRecipe.image.length">
-          <div *ngFor="let img of selectedRecipe.image">
-            <img [src]="img" alt="Recipe Image" class="bgImage">
+    <div class="recipe-details">
+      <!-- Basic Info in a 3-column grid -->
+      <div class="recipe-section">
+        <div class="recipe-info-row">
+          <div class="info-item">
+            <h5>Cooking Time</h5>
+            <ul>
+              <li>
+                <strong>{{selectedRecipe.cookingTime}}</strong>
+              </li>
+            </ul>
           </div>
-        </div>
-        
-        <!-- Ingredients next to the image -->
-        <div class="recipe-ingredients">
-          <h5>Ingredients</h5>
-          <ul>
-            <li *ngFor="let ingredient of selectedRecipe.ingredients">
-              <strong>{{ingredient}}</strong>
-            </li>
-          </ul>
+
+          <div class="info-item">
+            <h5>Level</h5>
+            <ul>
+              <li>
+                <strong>{{selectedRecipe.level}}</strong>
+              </li>
+            </ul>
+          </div>
+
+          <div class="info-item">
+            <h5>Category</h5>
+            <ul>
+              <li>
+                <strong>{{selectedRecipe.category}}</strong>
+              </li>
+            </ul>
+          </div>
+
+          <div class="info-item">
+            <h5>Author</h5>
+            <ul>
+              <li>
+                <strong>{{selectedRecipe.author}}</strong>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-      
-      <div class="recipe-details">
-        <!-- Basic Info in a 3-column grid -->
-        <div class="recipe-section">
-          <div class="recipe-info-row">
-            <div class="info-item">
-              <h5>Cooking Time</h5>
-              <ul>
-                <li *ngFor="let cookingTime of selectedRecipe.cookingTime">
-                  <strong>{{cookingTime}}</strong>
-                </li>
-              </ul>
-            </div>
-            
-            <div class="info-item">
-              <h5>Level</h5>
-              <ul>
-                <li *ngFor="let level of selectedRecipe.level">
-                  <strong>{{level}}</strong>
-                </li>
-              </ul>
-            </div>
-            
-            <div class="info-item">
-              <h5>Category</h5>
-              <ul>
-                <li *ngFor="let category of selectedRecipe.category">
-                  <strong>{{category}}</strong>
-                </li>
-              </ul>
-            </div>
-            
-            <div class="info-item">
-              <h5>Author</h5>
-              <ul>
-                <li *ngFor="let a of selectedRecipe.author">
-                  <strong>{{a}}</strong>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Steps -->
-        <div class="recipe-section steps-section">
-          <h5>Steps</h5>
-          <ul>
-            <li *ngFor="let step of selectedRecipe.steps; let i = index">
-              <strong>{{i + 1}}</strong> {{step}}
-            </li>
-          </ul>
-        </div>
+
+      <!-- Steps -->
+      <div class="recipe-section steps-section">
+        <h5>Steps</h5>
+        <ul>
+          <li *ngFor="let step of selectedRecipe.steps; let i = index">
+            <strong>{{i + 1}}</strong> {{step}}
+          </li>
+        </ul>
       </div>
     </div>
   </div>
+</div>
 
-  <div *ngIf="isLoading" class="spinner">
-    <div class="spinner-border" role="status">
-    </div>
+<div *ngIf="isLoading" class="spinner">
+  <div class="spinner-border" role="status">
+  </div>
 </div>

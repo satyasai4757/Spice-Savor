@@ -6,17 +6,20 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   canActivate(
     next: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): boolean {
-    if (localStorage.getItem('email') == null || localStorage.getItem('pass') == null) {
-      alert("Please enter credentials to access")
-      this.router.navigate(['/login']);
-      return false;
-    } else {
+    state: RouterStateSnapshot
+  ): boolean {
+
+    const email = localStorage.getItem('email');
+
+    if (email) {
       return true;
     }
+
+    this.router.navigate(['/login']);
+    return false;
   }
 }

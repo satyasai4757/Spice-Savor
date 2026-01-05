@@ -5,6 +5,8 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 // import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AuthService } from 'src/app/auth.service';
 import { ReceipeModalComponent } from '../auth/receipe-modal/receipe-modal.component';
+import * as e from 'cors';
+import { environment } from 'src/environments/environment.prod';
 // import { ReceipeModalComponent } from '../modal/receipe-modal/receipe-modal.component';
 
 @Component({
@@ -16,37 +18,43 @@ export class NavbarComponent implements OnInit {
   myData: any;
   searchQuery: string = '';
   filteredRecipes: any;
-  isLoading:boolean = true;
-
-
+  isLoading: boolean = false;
+  adminEmails: string[] = [
+    'satyadiverseinfotech@gmail.com',
+    'spraneeth989@gmail.com'
+  ];
+  loggedInEmail: string | null = null;
 
   ngOnInit(): void {
+    this.loggedInEmail = localStorage.getItem('email');
     this.getRecipeData();
-
   }
 
   constructor(private http: HttpClient,
     public authService: AuthService,
-    private router:Router,
+    private router: Router,
     private modalService: NgbModal
-  ) {}
- 
+  ) { }
+
   getRecipeData() {
-    this.http.get<any>(`http://localhost:3000/recipesData`).subscribe((res: any) => {
+    this.isLoading = true;
+    // this.http.get<any>(environment.apiUrl + '/recipes').subscribe((res: any) => {
+    this.http.get<any>(`${environment.apiUrl}/recipes`).subscribe((res: any) => {
+
       // console.log(res, "response");
       this.myData = res;
       this.filteredRecipes = this.myData;
       this.isLoading = false;
-    },error =>{
+    }, error => {
       this.isLoading = false;
     })
   }
-  readMore(recipeId: string){
+  readMore(recipeId: string) {
     this.router.navigate(['recipes-detail', recipeId]);
   }
 
-  editRecipe(id:string) {
-    this.router.navigate(['recipe-edit',id])
+  editRecipe(id: string) {
+    this.router.navigate(['recipe-edit', id])
   }
 
   logout() {
@@ -66,19 +74,40 @@ export class NavbarComponent implements OnInit {
 
   }
 
-  public user = {  }
-  
-  receipModal(){
-      const modalRef = this.modalService.open(ReceipeModalComponent);
-      modalRef.componentInstance.user = this.user;
-      modalRef.result.then((result) => {
-        if (result) {
-          // console.log(result);
-        }
-      });
+  public user = {}
+
+  receipModal() {
+    const modalRef = this.modalService.open(ReceipeModalComponent);
+    modalRef.componentInstance.user = this.user;
+    modalRef.result.then((result) => {
+      if (result) {
+        // console.log(result);
+      }
+    });
   }
 
   closeModal() {
     this.router.navigate(['home'])
   }
+
+  isAdmin(): boolean {
+    return this.loggedInEmail !== null && this.adminEmails.includes(this.loggedInEmail);
+  }
+
+  deleteRecipe(id: string) {
+    this.isLoading = true;
+    if (!confirm('Are you sure you want to delete this recipe?')) return;
+
+    this.authService.deleteRecipe(id).subscribe({
+      next: () => {
+        alert('Recipe deleted successfully');
+        this.getRecipeData(); // refresh list
+        this.isLoading = false;
+      },
+      error: () => {
+        alert('Failed to delete recipe');
+      }
+    });
+  }
+
 }

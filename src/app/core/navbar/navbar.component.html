@@ -48,21 +48,28 @@
       <div class="card recipe-card">
         <img [src]="data.image" class="card-img-top" alt="{{data.title}}">
         <div class="card-body">
-          <h5 class="card-title  placeholder-glow">{{data.title}}</h5>
-          <p class="card-text">{{data.summary}}</p>
+          <h5 class="card-title placeholder-glow" [title]="data.title">{{data.title | slice:0:35 }}
+            <span *ngIf="data.title?.length > 35">...</span>
+          </h5>
+          <p class="card-text" [title]="data.summary">
+            {{ data.summary | slice:0:120 }}
+            <span *ngIf="data.summary?.length > 120">...</span>
+          </p>
           <!-- <a class="btn btn-primary" (click)="readMore()">Read More</a> -->
           <div class="button-container">
-            <button type="button" class="btn custom-button3" (click)="readMore(data.id)">Read More >>></button>
-            <button type="button" class="btn custom-button3" (click)="editRecipe(data.id)">
+            <button type="button" class="btn custom-button3" (click)="readMore(data._id)">Read More >>></button>
+            <button *ngIf="isAdmin()" type="button" class="btn custom-button3" (click)="deleteRecipe(data._id)">
+              <i class="bi bi-trash"></i>
+            </button>
+            <button type="button" class="btn custom-button3" (click)="editRecipe(data._id)">
               <i class="bi bi-pencil"></i>
             </button>
           </div>
-          
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div *ngIf="isLoading" class="spinner">
-  <div class="spinner-border"></div>
-</div>
+  <div *ngIf="isLoading" class="spinner">
+    <div class="spinner-border"></div>
+  </div>

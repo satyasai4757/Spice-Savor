@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-login',
@@ -16,13 +17,13 @@ import { AuthService } from 'src/app/auth.service';
 })
 export class LoginComponent implements OnInit {
   myForm!: FormGroup;
-
+  isLoading: boolean = false;
   constructor(
     private builder: FormBuilder,
     private authService: AuthService,
     private router: Router,
     private http: HttpClient
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.myForm = this.builder.group({
@@ -32,28 +33,35 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.http.get<any>('http://localhost:3000/signUpUsers').subscribe(
-      (response) => {
-        const user = response.find((a: any) => 
-          a.email === this.myForm.value.email && a.password === this.myForm.value.password
-        );
-  
-        if (user) {
-          localStorage.setItem('email', user.email);
-          localStorage.setItem('pass', user.password);
-          localStorage.setItem('fullname', user.fullname);
-  
+
+    if (this.myForm.invalid) {
+      alert('Please enter credentials to access');
+      return;
+    }
+    this.isLoading = true;
+    this.http.post<any>(
+      `${environment.apiUrl}/auth/login`,
+      this.myForm.value
+    ).subscribe({
+      next: (res) => {
+
+        // ✅ SUCCESS
+        if (res && res.user) {
+          localStorage.setItem('email', res.user.email);
+          localStorage.setItem('fullname', res.user.fullname);
+          localStorage.setItem('password', res.user.password);
+
           this.myForm.reset();
           this.router.navigate(['/home']);
-        } else {
-          alert('User not found');
-          this.myForm.reset();
         }
+        this.isLoading = false;
       },
-      (error) => {
-        alert('Something went wrong with the API.');
+      error: (err) => {
+        alert(err.error?.message || 'Invalid email or password');
       }
-    );
+    });
   }
-  
+
+
+
 }

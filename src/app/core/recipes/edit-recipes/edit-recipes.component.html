@@ -2,17 +2,15 @@
     <div>
         <button class="back-button" (click)="goBack()">Back</button>
 
-    </div>
     <div class="container">
-        <h1 class="mt-3" style="font-style: italic; color: darkred; font-weight: bold;">Edit {{recipeTitle}} Recipe...</h1>
+        <h1 class="mt-3" style="font-style: italic; color: darkred; font-weight: bold;">Edit {{ editrecipeform.value.title }} Recipe...</h1>
         <form [formGroup]="editrecipeform" (ngSubmit)="putRecipeData()">
-            <div class="mt-2">
-                <!-- Title -->
-                <!-- <div class="mt-3">
-                    <label class="form-label">Title</label>
-                    <input type="text" id="recipeTitle" autocomplete="off" class="form-control custom-input"
-                        formControlName="title">
-                </div> -->
+
+            <!-- Title -->
+            <!-- <div class="mt-3">
+                <label class="form-label">Title</label>
+                <input class="form-control" formControlName="title">
+            </div> -->
 
                 <!-- Cooking Time -->
                 <div class="mt-3">
@@ -67,7 +65,7 @@
                 <!-- Upload Image -->
                 <div class="mt-3">
                     <label for="formFile" class="form-label">Upload Image</label>
-                    <input class="form-control custom-input6" type="file" id="formFile" (change)="saveImages($event)">
+                    <input class="form-control custom-input6" type="file" id="formFile" (change)="saveImage($event)">
                     <div class="preview mt-2" *ngIf="previewImage">
                         <img [src]="previewImage" alt="Recipe Image" class="img-preview" style="max-width: 300px; max-height: 300px;">
                     </div>
@@ -109,7 +107,6 @@
                 <div class="d-grid gap-2 mb-3">
                     <button type="submit" class="btn btn-outline-light upload-button">Update Recipe</button>
                 </div>
-            </div>
         </form>
     </div>
 </div>

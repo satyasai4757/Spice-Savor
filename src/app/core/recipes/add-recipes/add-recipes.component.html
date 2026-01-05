@@ -9,14 +9,16 @@
         <!-- Title -->
         <div class="mt-3">
           <label class="form-label">Title</label>
-          <input type="text" id="recipeTitle" autocomplete="off" class="form-control custom-input" formControlName="title">
-          <div class="text-danger" *ngIf="addrecipeform.controls['title'].dirty && addrecipeform.hasError('required','title')"
-          >*Title Required</div>
+          <input type="text" id="recipeTitle" autocomplete="off" class="form-control custom-input"
+            formControlName="title">
+          <div class="text-danger"
+            *ngIf="addrecipeform.controls['title'].dirty && addrecipeform.hasError('required','title')">*Title Required
+          </div>
         </div>
 
         <!-- Cooking Time -->
         <div class="mt-3">
-          <label class="form-label">Cooking Time</label> 
+          <label class="form-label">Cooking Time</label>
           <select id="cookingTime" class="form-control custom-input2" formControlName="cookingTime">
             <option value="20 minutes">20 minutes</option>
             <option value="1/2 hour">1/2 hour</option>
@@ -30,11 +32,12 @@
         <div class="mt-3">
           <label class="form-label">Summary</label>
           <div class="col-6 p-2">
-          <textarea id="summary" class="form-control custom-input3" formControlName="summary"></textarea>
-          <span class="text-danger" *ngIf="addrecipeform.controls['summary'].dirty && addrecipeform.hasError('required','summary')">
-            *Summary Required
-          </span>
-        </div>
+            <textarea id="summary" class="form-control custom-input3" formControlName="summary"></textarea>
+            <span class="text-danger"
+              *ngIf="addrecipeform.controls['summary'].dirty && addrecipeform.hasError('required','summary')">
+              *Summary Required
+            </span>
+          </div>
         </div>
 
         <!-- Level -->
@@ -59,7 +62,8 @@
             <input type="radio" id="veg" name="category" value="Veg" class="btn-check" formControlName="category">
             <label for="veg" class="toggle-button">Veg</label>
 
-            <input type="radio" id="nonveg" name="category" value="Non-Veg" class="btn-check" formControlName="category">
+            <input type="radio" id="nonveg" name="category" value="Non-Veg" class="btn-check"
+              formControlName="category">
             <label for="nonveg" class="toggle-button">Non-Veg</label>
           </div>
         </div>
@@ -72,7 +76,7 @@
             <div *ngFor="let url of uploads; let i = index" class="imagestyle border mb-4">
               <button class="btn btn-outline-danger" (click)="removeImage(i)">❌</button>
               <img [src]="url" alt="Image preview">
-              <span class="text-danger" *ngIf="addrecipeform.controls['uploads'].dirty && addrecipeform.hasError('required','uploads')">
+              <span class="text-danger" *ngIf="uploads.length === 0">
                 *Required Image of the Recipe
               </span>
             </div>
@@ -83,22 +87,25 @@
         <div class="mt-3">
           <label for="author" class="form-label">Author</label>
           <div class="col-6 p-2">
-          <input type="text" id="author" autocomplete="off" class="form-control custom-input " formControlName="author">
-          <span class="text-danger" *ngIf="addrecipeform.controls['author'].dirty && addrecipeform.hasError('required','author')">
-            *Required the Name of the Creator
-          </span>
-        </div>
+            <input type="text" id="author" autocomplete="off" class="form-control custom-input "
+              formControlName="author">
+            <span class="text-danger"
+              *ngIf="addrecipeform.controls['author'].dirty && addrecipeform.hasError('required','author')">
+              *Required the Name of the Creator
+            </span>
+          </div>
         </div>
 
         <!-- Ingredients -->
         <div class="mt-3">
           <label for="ingredients" class="form-label">Ingredients</label>
           <div class="col-6 p-2">
-          <textarea id="ingredients" class="form-control custom-input4" formControlName="ingredients"></textarea>
-            <span class="text-danger" *ngIf="addrecipeform.controls['ingredients'].dirty && addrecipeform.hasError('required','ingredients')">
+            <textarea id="ingredients" class="form-control custom-input4" formControlName="ingredients"></textarea>
+            <span class="text-danger"
+              *ngIf="addrecipeform.controls['ingredients'].dirty && addrecipeform.hasError('required','ingredients')">
               *Ingredients Field Should not be empty
             </span>
-        </div>
+          </div>
         </div>
 
         <!-- Steps -->
@@ -112,16 +119,17 @@
               <button type="button" class="btn btn-outline-success ms-2" (click)="addStep()">+</button>
             </div>
           </div>
-        </div> 
+        </div>
 
         <!-- Submit Button -->
         <div class="d-grid gap-2 mb-3">
-          <button type="submit" class="btn btn-outline-light upload-button" >Upload New Recipe</button>
+          <button type="submit" class="btn btn-outline-light upload-button">Upload New Recipe</button>
         </div>
       </div>
     </form>
   </div>
 </div>
 
-
-
+<div *ngIf="isLoading" class="spinner">
+  <div class="spinner-border"></div>
+</div>

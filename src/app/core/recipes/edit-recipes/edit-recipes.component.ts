@@ -1,15 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
-import { RecipesModel } from '../recipe.model';
-import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment.prod';
 
 @Component({
   selector: 'app-edit-recipes',
@@ -17,190 +11,98 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./edit-recipes.component.css'],
 })
 export class EditRecipesComponent implements OnInit {
+
   editrecipeform!: FormGroup;
-  uploads: string[] = [];
-  myData: any;
-  recipeId: string | null = null;
-  isLoading: boolean = true;
-  recipeTitle: string = '';
+  recipeId!: string;
+  isLoading = true;
   previewImage: string = '';
-  imageName: string = '';
 
   constructor(
-    private formbuilder: FormBuilder,
+    private fb: FormBuilder,
     private authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
-    private route: ActivatedRoute
-  ) {}
+    private http: HttpClient
+  ) { }
 
-  ngOnInit() {
-    this.editrecipeform = this.formbuilder.group({
-      recipeTitle: ['', Validators.required], // Changed from title
+  ngOnInit(): void {
+    this.editrecipeform = this.fb.group({
+      title: ['', Validators.required],
       cookingTime: ['', Validators.required],
       summary: ['', Validators.required],
       level: ['', Validators.required],
       category: ['', Validators.required],
-      image: ['', Validators.required],
+      image: [[]],
       author: ['', Validators.required],
       ingredients: ['', Validators.required],
-      steps: this.formbuilder.array([]),
+      steps: this.fb.array([])
     });
 
-    this.route.paramMap.subscribe((params) => {
-      this.recipeId = params.get('id') || '';
-      this.getRecipeData(this.recipeId);
-    });
-  }
-  createStepField(): any {
-    return this.formbuilder.control('', Validators.required);
+    this.recipeId = this.route.snapshot.paramMap.get('id')!;
+    this.loadRecipe();
   }
 
   get steps(): FormArray {
     return this.editrecipeform.get('steps') as FormArray;
   }
 
-  addStep(): void {
-    this.steps.push(new FormControl('', Validators.required));
-  }
+  loadRecipe() {
+    this.authService.getRecipeDataByID(this.recipeId).subscribe(recipe => {
+      this.editrecipeform.patchValue({
+        title: recipe.title,
+        cookingTime: recipe.cookingTime,
+        summary: recipe.summary,
+        level: recipe.level,
+        category: recipe.category,
+        author: recipe.author,
+        ingredients: recipe.ingredients,
+        image: recipe.image
+      });
 
-  removeStep(index: number): void {
-    if (this.steps.length > 1) {
-      this.steps.removeAt(index);
-    }
-  }
+      this.previewImage = recipe.image?.[0];
 
-  // Fetch Recipe Data
-  getRecipeData(id: string) {
-    this.authService.getRecipeDataByID(id).subscribe({
-      next: (recipe: any) => {
-        console.log(recipe);
-        
-        this.isLoading = false;
-        this.recipeTitle = recipe.title;
+      recipe.steps.forEach((s: string) =>
+        this.steps.push(this.fb.control(s, Validators.required))
+      );
 
-        // Clear existing steps
-        while (this.steps.length) {
-          this.steps.removeAt(0);
-        }
-        
-
-        // Handle image data properly
-        if (
-          recipe.image &&
-          Array.isArray(recipe.image) &&
-          recipe.image.length > 0
-        ) {
-          this.previewImage = recipe.image[0]; // Store the image for preview
-
-          // Extract filename if image is a URL, otherwise set a placeholder name
-        const imageUrl = recipe.image[0];
-        this.imageName = imageUrl.includes('/')
-          ? imageUrl.split('/').pop() || 'Uploaded Image'
-          : 'Uploaded Image';
-
-          // Also set it in the form
-          this.editrecipeform.patchValue({
-            image: recipe.image[0],
-          });
-        }
-
-        // Rest of the form patching
-        this.editrecipeform.patchValue({
-          recipeTitle: recipe.title,
-          cookingTime: recipe.cookingTime,
-          summary: recipe.summary,
-          level: recipe.level,
-          category: recipe.category,
-          author: recipe.author,
-          ingredients: recipe.ingredients,
-        });
-
-        // Populate steps
-        if (recipe.steps && Array.isArray(recipe.steps)) {
-          recipe.steps.forEach((step: string) => {
-            this.steps.push(this.formbuilder.control(step));
-          });
-        }
-
-        if (this.steps.length === 0) {
-          this.addStep();
-        }
-      },
-      error: (err) => {
-        this.isLoading = false;
-        console.error('Error fetching recipe:', err);
-      },
+      this.isLoading = false;
     });
   }
 
-  // Update the saveImages method
-  saveImages(event: any): void {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      this.imageName = file.name; // Store the uploaded file name
-      reader.onload = (e: any) => {
-        const imageBase64 = e.target.result;
-        this.previewImage = imageBase64;
-
-        // Update form control
-        this.editrecipeform.patchValue({
-          image: imageBase64,
-        });
-
-        // Clear and update uploads array
-        this.uploads = [imageBase64];
-      };
-
-      reader.readAsDataURL(file);
-    }
+  addStep() {
+    this.steps.push(this.fb.control('', Validators.required));
   }
 
-  putRecipeData(): void {
-    if (this.editrecipeform.invalid) {
-      console.log('Form is invalid', this.editrecipeform.value);
-      return;
-    }
+  removeStep(i: number) {
+    this.steps.removeAt(i);
+  }
 
-    const formData = this.editrecipeform.getRawValue();
-    const id = this.recipeId;
+  saveImage(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    // Use the previewImage for the submission
-    const imageData = this.previewImage ? [this.previewImage] : [];
-
-    const updatePayload = {
-      title: this.recipeTitle,
-      cookingTime: formData.cookingTime,
-      summary: formData.summary,
-      level: formData.level,
-      category: formData.category,
-      image: imageData, // Send as array
-      author: formData.author,
-      ingredients: formData.ingredients,
-      steps: formData.steps || [],
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewImage = reader.result as string;
+      this.editrecipeform.patchValue({
+        image: [this.previewImage]
+      });
     };
-
-    console.log('Sending update payload:', updatePayload);
-
-    this.authService.updateRecipe(id, updatePayload).subscribe({
-      next: (response) => {
-        console.log('Recipe updated successfully:', response);
-        alert('Recipe updated successfully!');
-        this.router.navigate(['/home']);
-      },
-      error: (err) => {
-        console.error('Error updating recipe:', err);
-        alert('Error updating recipe. Please try again.');
-      },
-    });
+    reader.readAsDataURL(file);
   }
 
-  removeImage(index: number): void {
-    this.uploads.splice(index, 1);
+  putRecipeData() {
+    if (this.editrecipeform.invalid) return;
+    this.isLoading = true;
+    this.authService.updateRecipe(this.recipeId, this.editrecipeform.value)
+      .subscribe(() => {
+        alert('Recipe updated successfully');
+        this.router.navigate(['/home']);
+        this.isLoading = false;
+      });
   }
 
   goBack() {
-    this.router.navigate(['home']);
+    this.router.navigate(['/home']);
   }
 }

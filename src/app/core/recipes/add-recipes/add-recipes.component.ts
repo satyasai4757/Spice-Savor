@@ -13,12 +13,12 @@ export class AddRecipesComponent implements OnInit {
   addrecipeform!: FormGroup;
   recipeModelObj: RecipesModel = new RecipesModel();
   uploads: string[] = [];
-
+  isLoading: boolean = false;
   constructor(
     private formbuilder: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.addrecipeform = this.formbuilder.group({
@@ -27,7 +27,6 @@ export class AddRecipesComponent implements OnInit {
       summary: ['', Validators.required],
       level: ['', Validators.required],
       category: ['', Validators.required],
-      image: ['',Validators.required],
       author: ['', Validators.required],
       ingredients: ['', Validators.required],
       steps: this.formbuilder.array([this.createStepField()])
@@ -51,32 +50,31 @@ export class AddRecipesComponent implements OnInit {
       this.steps.removeAt(index);
     }
   }
-
+  
   postRecipeData(): void {
-    if (this.addrecipeform.valid) {
-      this.recipeModelObj.id = this.addrecipeform.value.id;
-      this.recipeModelObj.title = this.addrecipeform.value.title;
-      this.recipeModelObj.cookingTime = this.addrecipeform.value.cookingTime;
-      this.recipeModelObj.summary = this.addrecipeform.value.summary;
-      this.recipeModelObj.level = this.addrecipeform.value.level;
-      this.recipeModelObj.category = this.addrecipeform.value.category;
-      this.recipeModelObj.image = this.uploads; // Updated to use uploads array
-      this.recipeModelObj.author = this.addrecipeform.value.author;
-      this.recipeModelObj.ingredients = this.addrecipeform.value.ingredients;
-      // Corrected to extract the values from the steps FormArray
-      this.recipeModelObj.steps = this.addrecipeform.value.steps;
-      this.authService.postRecipe(this.recipeModelObj).subscribe(
-        (res) => {
-          // alert('Recipe Added Successfully');
-          this.addrecipeform.reset();
-          this.router.navigate(['/home']);
-        },
-        (err) => {
-          alert('Error while adding recipe');
-        }
-      );
+    if (this.addrecipeform.invalid || this.uploads.length === 0) {
+      alert('Please fill all fields and upload at least one image');
+      return;
     }
+
+    const recipePayload = {
+      ...this.addrecipeform.value,
+      image: this.uploads
+    };
+    this.isLoading = true;
+    this.authService.postRecipe(recipePayload).subscribe(
+      () => {
+        this.addrecipeform.reset();
+        this.uploads = [];
+        this.router.navigate(['/home']);
+        this.isLoading = false;
+      },
+      () => {
+        alert('Error while adding recipe');
+      }
+    );
   }
+
 
   saveImages(event: any): void {
     if (event.target.files) {
