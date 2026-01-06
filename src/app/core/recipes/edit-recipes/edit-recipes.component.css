@@ -46,7 +46,7 @@
 .custom-input6 {
   font-size: 18px;
   border-radius: 20px;
-  padding: 10px;
+  padding: 6px;
   border: 1px solid #ccc;
   outline: none;
   background-color: #fff;
@@ -166,8 +166,10 @@
   border-radius: 20px;
   overflow: hidden;
   border: 2px solid darkred;
-  max-width: 300px; /* Adjust the max width as needed */
-  margin: 0 auto; /* Center the buttons if desired */
+  max-width: 300px;
+  /* Adjust the max width as needed */
+  margin: 0 auto;
+  /* Center the buttons if desired */
 }
 
 .toggle-button {
@@ -184,7 +186,7 @@
   transition: background-color 0.4s, color 0.3s;
 }
 
-.btn-check:checked + .toggle-button {
+.btn-check:checked+.toggle-button {
   background-color: darkred;
   color: white;
 }
@@ -194,18 +196,25 @@
 }
 
 .upload-button {
-  border-radius: 20px; /* Rounded corners for the button */
-  border: 1px solid darkred; /* Match the border color with the button color */
-  color: darkred; /* Text color */
-  background-color: rgb(252, 234, 234); /* Button background color */
-  transition: background-color 1s ease; /* Smooth transition for hover effect */
+  border-radius: 20px;
+  /* Rounded corners for the button */
+  border: 1px solid darkred;
+  /* Match the border color with the button color */
+  color: darkred;
+  /* Text color */
+  background-color: rgb(252, 234, 234);
+  /* Button background color */
+  transition: background-color 1s ease;
+  /* Smooth transition for hover effect */
   font-style: italic;
   font-weight: bold;
 }
 
 .upload-button:hover {
-  background-color: darkred; /* Background color on hover */
-  color: white; /* Text color on hover */
+  background-color: darkred;
+  /* Background color on hover */
+  color: white;
+  /* Text color on hover */
 }
 
 .img-preview {
@@ -213,4 +222,9 @@
   height: auto;
   border-radius: 10px;
   margin-top: 10px;
+}
+
+input[readonly] {
+  background-color: #dfdfdf;
+  cursor: not-allowed;
 }

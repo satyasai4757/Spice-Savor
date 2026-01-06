@@ -27,10 +27,11 @@
       <div class="recipe-ingredients">
         <h5>Ingredients</h5>
         <ul>
-          <li>
-            <strong>{{selectedRecipe.ingredients}}</strong>
+          <li *ngFor="let ingredient of selectedRecipe.ingredients.split(',')">
+            <strong>{{ ingredient.trim() }}</strong>
           </li>
         </ul>
+
       </div>
     </div>
 
