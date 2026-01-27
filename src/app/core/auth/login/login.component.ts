@@ -53,15 +53,15 @@ export class LoginComponent implements OnInit {
 
           this.myForm.reset();
           this.router.navigate(['/home']);
+          this.isLoading = false;
         }
-        this.isLoading = false;
       },
       error: (err) => {
         alert(err.error?.message || 'Invalid email or password');
+        this.myForm.reset();
+        this.router.navigate(['/home']);
+        this.isLoading = false
       }
     });
   }
-
-
-
 }
