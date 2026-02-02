@@ -1,35 +1,53 @@
-<div>
-    <form [formGroup]="myForm" (ngSubmit)="onSubmit()">
-        <img src="./assets/images/loginimage.png" style="width: 100vw; height: 100vh;">
+<div class="login-wrapper">
+    <img src="./assets/images/loginimage.png" class="bg-image">
+
+    <form [formGroup]="myForm" (ngSubmit)="onSubmit()" class="login-form">
         <div class="card">
-            <div class="text-center">
+            <div class="text-center mb-2">
                 <h1>Login</h1>
                 <h4>Welcome back,</h4>
                 <h5>Please enter your Email and Password</h5>
             </div>
+
             <div class="mb-3 input-group">
-                <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" class="form-control" autocomplete="off" name="email" formControlName="email"
-                    placeholder="Enter Your Email">
-                <span class="text-danger"
-                    *ngIf="myForm.controls['email'].dirty && myForm.hasError('required', 'email')">*Email Id is
-                    Required</span>
+                <span class="input-group-text">
+                    <i class="fas fa-user"></i>
+                </span>
+                <input type="text" class="form-control" formControlName="email" placeholder="Enter Your Email">
             </div>
-            <div class="mb-3 input-group ">
-                <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                <input type="password" class="form-control" autocomplete="off" name="password"
-                    formControlName="password" placeholder="Enter your Password">
-                <span class="text-danger"
-                    *ngIf="myForm.controls['password'].dirty && myForm.hasError('required', 'password')">*Password is
-                    Required</span>
+
+            <span class="text-danger" *ngIf="myForm.controls['email'].dirty && myForm.hasError('required', 'email')">
+                *Email Id is Required
+            </span>
+
+            <div class="mb-3 input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-lock"></i>
+                </span>
+                <input type="password" class="form-control" formControlName="password"
+                    placeholder="Enter your Password">
             </div>
+
+            <span class="text-danger"
+                *ngIf="myForm.controls['password'].dirty && myForm.hasError('required', 'password')">
+                *Password is Required
+            </span>
+
             <div class="mb-3 d-flex justify-content-center">
-                <button type="submit" class="btn btn-success btn-custom-lg" [disabled]="!myForm.valid">Sign In</button>
+                <button type="submit" class="btn btn-success btn-custom-lg" [disabled]="!myForm.valid">
+                    Sign In
+                </button>
             </div>
-            <a style="color: gold; font-weight: bold;" routerLink="/signup">New User? Click here to Signup</a>
+
+            <div>
+                <a class="signup-link" routerLink="/signup">
+                    New User? Click here to Signup
+                </a>
+            </div>
         </div>
     </form>
 </div>
+
 <div *ngIf="isLoading" class="spinner">
     <div class="spinner-border"></div>
 </div>

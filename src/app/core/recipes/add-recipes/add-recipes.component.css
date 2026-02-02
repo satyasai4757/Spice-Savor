@@ -212,3 +212,115 @@
     background-color: darkred; /* Background color on hover */
   color: white; /* Text color on hover */
 }
+
+/* ==================================
+   RESPONSIVE FIXES – ADD RECIPE PAGE
+================================== */
+
+/* Tablets & below */
+@media (max-width: 992px) {
+
+  .form-background {
+    padding: 80px 30px;
+    background-attachment: scroll; /* mobile-safe */
+    border-radius: 40px;
+    min-height: auto;
+  }
+
+  .custom-input {
+    width: 100%;
+    max-width: 100%;
+    height: 48px;
+  }
+
+  .custom-input2,
+  .custom-input3,
+  .custom-input4,
+  .custom-input6 {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .custom-input3 {
+    height: 120px;
+  }
+
+  .custom-input4 {
+    height: 160px;
+  }
+
+  .preview {
+    flex-wrap: wrap;
+  }
+
+  .imagestyle {
+    width: 100%;
+    height: 220px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+
+  .form-background {
+    padding: 60px 15px;
+    border-radius: 25px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    text-align: center;
+  }
+
+  .form-label {
+    font-size: 1rem;
+  }
+
+  .toggle-button-group {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .toggle-button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .custom-input5 {
+    height: 120px;
+  }
+
+  .step-number {
+    font-size: 0.9rem;
+  }
+
+  .upload-button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .imagestyle {
+    height: 180px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 400px) {
+
+  .form-background {
+    padding: 40px 10px;
+  }
+
+  .toggle-button {
+    font-size: 13px;
+  }
+
+  .custom-input,
+  .custom-input2,
+  .custom-input3,
+  .custom-input4,
+  .custom-input5,
+  .custom-input6 {
+    font-size: 15px;
+  }
+}

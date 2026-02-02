@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -7,6 +7,7 @@ import { AuthService } from 'src/app/auth.service';
 import { ReceipeModalComponent } from '../auth/receipe-modal/receipe-modal.component';
 import * as e from 'cors';
 import { environment } from 'src/environments/environment.prod';
+import { finalize } from 'rxjs';
 // import { ReceipeModalComponent } from '../modal/receipe-modal/receipe-modal.component';
 
 @Component({
@@ -38,17 +39,15 @@ export class NavbarComponent implements OnInit {
 
   getRecipeData() {
     this.isLoading = true;
-    // this.http.get<any>(environment.apiUrl + '/recipes').subscribe((res: any) => {
-    this.http.get<any>(`${environment.apiUrl}/recipes`).subscribe((res: any) => {
 
-      // console.log(res, "response");
-      this.myData = res;
-      this.filteredRecipes = this.myData;
-      this.isLoading = false;
-    }, error => {
-      this.isLoading = false;
-    })
+    this.http.get<any>(`${environment.apiUrl}/recipes`)
+      .pipe(finalize(() => this.isLoading = false))
+      .subscribe(res => {
+        this.myData = res;
+        this.filteredRecipes = res;
+      });
   }
+  
   readMore(recipeId: string) {
     this.router.navigate(['recipes-detail', recipeId]);
   }

@@ -1,46 +1,75 @@
-<nav class="navbar navbar-light custom-navbar">
-  <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%; position: relative;">
-    <img style="height: 100px; width: 100px; position: absolute;  top: -10px; left: -10px;"
-      src="assets/images/spicesavour.svg">
-  </div>
-  <div class="navbar-content">
-    <h1 style="color: rgb(139, 0, 0);">Spice Savor</h1>
-    <p class="tagline" style="color: darkslategray;">Spice Up Your Recipe Savor The Results</p>
-  </div>
-  <div>
+<nav class="navbar navbar-expand-lg custom-navbar">
+  <div class="container-fluid">
 
-    <button type="button" class="btn custom-button1" [routerLink]="['/home/add-recipes']">
-      Add Recipe
+    <!-- LEFT: LOGO + TITLE -->
+    <div class="d-flex align-items-center navbar-brand-area">
+
+      <!-- LOGO (UNCHANGED) -->
+      <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 50%; position: relative;">
+        <img
+          style="height: 100px; width: 100px; position: absolute; top: -10px; left: -10px;"
+          src="assets/images/spicesavour.svg">
+      </div>
+
+      <!-- TITLE -->
+      <div class="navbar-content">
+        <h1>Spice Savor</h1>
+        <p class="tagline">Spice Up Your Recipe Savor The Results</p>
+      </div>
+    </div>
+
+    <!-- TOGGLER -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#spiceNavbar"
+      aria-controls="spiceNavbar"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
     </button>
+
+    <!-- RIGHT: ACTIONS -->
+    <div class="collapse navbar-collapse justify-content-end" id="spiceNavbar">
+
+      <div class="navbar-actions">
+
+        <button class="btn custom-button1" routerLink="/home/add-recipes">
+          Add Recipe
+        </button>
+
+        <a class="homeicon" (click)="getRecipeData()">
+          <i class="bi bi-house-fill"></i>
+        </a>
+
+        <a class="personicon" (click)="receipModal()">
+          <i class="bi bi-person-fill"></i>
+        </a>
+
+        <form class="d-flex search-form" (submit)="searchRecipes()">
+          <input
+            class="form-control custom-input"
+            type="search"
+            placeholder="Search Recipe..."
+            [(ngModel)]="searchQuery"
+            name="searchQuery">
+          <button class="btn custom-button2" type="submit">
+            Search
+          </button>
+        </form>
+
+        <div class="logout-container" (click)="logout()">
+          <i class="bi bi-box-arrow-right"></i>
+          <p>LogOut</p>
+        </div>
+
+      </div>
+    </div>
   </div>
-
-  <div>
-    <a class="homeicon" style="color: darkred;" (click)="getRecipeData()">
-      <i class="bi bi-house-fill"></i>
-    </a>
-  </div>
-
-  <div>
-    <a class="personicon" style="color: darkred;" (click)="receipModal()">
-      <i class="bi bi-person-fill"></i>
-    </a>
-  </div>
-
-  <div style="margin-right: 20px;">
-    <form class="d-flex" role="search" (submit)="searchRecipes()">
-      <input class="form-control mx-2 custom-input" type="search" placeholder="Search Recipe..." aria-label="Search"
-        [(ngModel)]="searchQuery" name="searchQuery">
-      <button class="btn btn-success custom-button2" type="submit">Search</button>
-    </form>
-  </div>
-
-
-  <div class="logout-container d-flex flex-column align-items-center">
-    <i class="bi bi-box-arrow-right logout" (click)="logout()"></i>
-    <p class="logout-text">LogOut</p>
-  </div>
-
 </nav>
+
+
 
 <div class="content-container">
   <div class="card-wrapper">
