@@ -14,6 +14,8 @@ export class AddRecipesComponent implements OnInit {
   recipeModelObj: RecipesModel = new RecipesModel();
   uploads: string[] = [];
   isLoading: boolean = false;
+  loggedInUser!: string;
+
   constructor(
     private formbuilder: FormBuilder,
     private authService: AuthService,
@@ -21,13 +23,14 @@ export class AddRecipesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.loggedInUser = localStorage.getItem('fullname') || '';
     this.addrecipeform = this.formbuilder.group({
       title: ['', Validators.required],
       cookingTime: ['', Validators.required],
       summary: ['', Validators.required],
       level: ['', Validators.required],
       category: ['', Validators.required],
-      author: ['', Validators.required],
+      author: [{ value: this.loggedInUser, disabled: true }],
       ingredients: ['', Validators.required],
       steps: this.formbuilder.array([this.createStepField()])
     });
@@ -50,31 +53,30 @@ export class AddRecipesComponent implements OnInit {
       this.steps.removeAt(index);
     }
   }
-  
-  postRecipeData(): void {
-    if (this.addrecipeform.invalid || this.uploads.length === 0) {
-      alert('Please fill all fields and upload at least one image');
-      return;
-    }
 
-    const recipePayload = {
-      ...this.addrecipeform.value,
-      image: this.uploads
-    };
+  postRecipeData() {
+
+    if (this.addrecipeform.invalid) return;
+
     this.isLoading = true;
-    this.authService.postRecipe(recipePayload).subscribe(
-      () => {
-        this.addrecipeform.reset();
-        this.uploads = [];
+
+    const payload = {
+      ...this.addrecipeform.getRawValue(), // 👈 includes disabled fields
+      author: this.loggedInUser            // extra safety
+    };
+
+    this.authService.postRecipe(payload).subscribe({
+      next: () => {
+        alert('Recipe added successfully');
         this.router.navigate(['/home']);
         this.isLoading = false;
       },
-      () => {
-        alert('Error while adding recipe');
+      error: () => {
+        alert('Failed to add recipe');
+        this.isLoading = false;
       }
-    );
+    });
   }
-
 
   saveImages(event: any): void {
     if (event.target.files) {

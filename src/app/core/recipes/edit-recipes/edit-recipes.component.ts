@@ -16,6 +16,7 @@ export class EditRecipesComponent implements OnInit {
   recipeId!: string;
   isLoading = true;
   previewImage: string = '';
+  loggedInUser!: string;
 
   constructor(
     private fb: FormBuilder,
@@ -39,7 +40,10 @@ export class EditRecipesComponent implements OnInit {
     });
 
     this.recipeId = this.route.snapshot.paramMap.get('id')!;
+    this.loggedInUser = localStorage.getItem('fullname') || '';
+
     this.loadRecipe();
+
   }
 
   get steps(): FormArray {
@@ -48,13 +52,22 @@ export class EditRecipesComponent implements OnInit {
 
   loadRecipe() {
     this.authService.getRecipeDataByID(this.recipeId).subscribe(recipe => {
+
+      // 🔐 AUTHOR CHECK
+      if (recipe.author !== this.loggedInUser) {
+        alert('You are not allowed to edit this recipe');
+        this.router.navigate(['/home']);
+        return;
+      }
+
+      // ✅ Populate form
       this.editrecipeform.patchValue({
         title: recipe.title,
         cookingTime: recipe.cookingTime,
         summary: recipe.summary,
         level: recipe.level,
         category: recipe.category,
-        author: recipe.author,
+        author: this.loggedInUser,   // force logged-in author
         ingredients: recipe.ingredients,
         image: recipe.image
       });
@@ -68,6 +81,7 @@ export class EditRecipesComponent implements OnInit {
       this.isLoading = false;
     });
   }
+
 
   addStep() {
     this.steps.push(this.fb.control('', Validators.required));
