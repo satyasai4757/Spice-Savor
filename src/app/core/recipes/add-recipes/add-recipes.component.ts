@@ -61,8 +61,9 @@ export class AddRecipesComponent implements OnInit {
     this.isLoading = true;
 
     const payload = {
-      ...this.addrecipeform.getRawValue(), // 👈 includes disabled fields
-      author: this.loggedInUser            // extra safety
+      ...this.addrecipeform.getRawValue(),
+      author: this.loggedInUser,
+      image: this.uploads
     };
 
     this.authService.postRecipe(payload).subscribe({
